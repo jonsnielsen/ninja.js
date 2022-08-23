@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import DataTable from './DataTable';
-import './App.css';
+import React from 'react';
 
-class App extends Component {
-  render() {
-    return (
+import './App.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { UserTableContainer } from './containers/UserTableContainer/UserTableContainer';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
       <div className="container mt-3">
-        <DataTable rows={this.props.rows} locale="da" rowsPerPage={5} />
+        <UserTableContainer />
       </div>
-    );
-  }
+    </QueryClientProvider>
+  );
 }
 
 export default App;
