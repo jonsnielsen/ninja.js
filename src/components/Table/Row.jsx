@@ -1,8 +1,6 @@
 import React from 'react';
 
-function Row(props) {
-  const { row } = props;
-
+function Row({ row }) {
   return (
     <tr>
       <td>

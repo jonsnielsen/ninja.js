@@ -1,16 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Pagination from './Pagination';
 import Row from './Row';
 import Search from './Search';
 
-export function Table({ rows, rowsPerPage, search }) {
+function Table({ rows, rowsPerPage }) {
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
-  const totalNumberOfPages = calculateTotalNumberOfPages(rows, rowsPerPage);
+  const [displayedRows, setDisplayedRows] = useState(rows);
+  const totalNumberOfPages = calculateTotalNumberOfPages(
+    displayedRows,
+    rowsPerPage,
+  );
 
-  useEffect(() => {
-    // When the data changes, set page number to 0
+  function search(event) {
+    const text = event.target.value;
+
+    const rowsFound = text
+      ? rows.filter((row) => {
+          return (
+            row.name1.toLowerCase().includes(text.toLowerCase()) ||
+            row.email?.toLowerCase().includes(text.toLowerCase())
+          );
+        })
+      : rows;
+
+    setDisplayedRows(rowsFound);
     setCurrentPageNumber(0);
-  }, [rows]);
+  }
 
   function changeToPageNumber(pageNumber) {
     setCurrentPageNumber(pageNumber);
@@ -21,7 +36,7 @@ export function Table({ rows, rowsPerPage, search }) {
     return [startIndex, startIndex + rowsPerPage];
   }
 
-  const rowsToRender = rows
+  const rowsToRender = displayedRows
     .map((row) => <Row key={row.per_id} row={row} />)
     .slice(...rowsInPageNumber(currentPageNumber));
 
