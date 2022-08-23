@@ -1,28 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Pagination from './Pagination';
 import Row from './Row';
 import Search from './Search';
 
-class Table extends React.Component {
-  state = {
-    rows: this.props.rows,
-    currentPageNumber: 0,
-    totalNumberOfPages: this.calculateTotalNumberOfPages(this.props.rows),
-  };
+function calculateTotalNumberOfPages(rows, rowsPerPage) {
+  if (rowsPerPage == 0) return 0;
+  return Math.ceil(rows.length / rowsPerPage);
+}
 
-  static defaultProps = {
-    rowsPerPage: 40,
-  };
+function Table({ rows, rowsPerPage }) {
+  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const [rowsFound, setRowsFound] = useState(rows);
+  const [totalNumberOfPages, setTotalNumberOfPages] = useState(
+    calculateTotalNumberOfPages(rowsFound, rowsPerPage),
+  );
 
-  calculateTotalNumberOfPages(rows) {
-    const { rowsPerPage } = this.props;
-    if (rowsPerPage == 0) return 0;
-    return Math.ceil(rows.length / rowsPerPage);
-  }
-
-  search(event) {
-    const { rows } = this.props;
+  function search(event) {
     const text = event.target.value;
     let rowsFound = rows;
 
@@ -35,43 +29,37 @@ class Table extends React.Component {
       });
     }
 
-    this.setState({
-      rows: rowsFound,
-      currentPageNumber: 0,
-      totalNumberOfPages: this.calculateTotalNumberOfPages(rowsFound),
-    });
+    setRowsFound(rowsFound);
+    setCurrentPageNumber(0);
+    setTotalNumberOfPages(calculateTotalNumberOfPages(rowsFound, rowsPerPage));
   }
 
-  changeToPageNumber(pageNumber) {
-    this.setState({ currentPageNumber: pageNumber });
+  function changeToPageNumber(pageNumber) {
+    setCurrentPageNumber(pageNumber);
   }
 
-  rowsInPageNumber(pageNumber) {
-    const { rowsPerPage } = this.props;
+  function rowsInPageNumber(pageNumber) {
     const startIndex = pageNumber * rowsPerPage;
     return [startIndex, startIndex + rowsPerPage];
   }
 
-  render() {
-    const { rows, currentPageNumber, totalNumberOfPages } = this.state;
-    const rowsToRender = rows
-      .map((row) => <Row key={row.per_id} row={row} />)
-      .slice(...this.rowsInPageNumber(currentPageNumber));
+  const rowsToRender = rowsFound
+    .map((row) => <Row key={row.per_id} row={row} />)
+    .slice(...rowsInPageNumber(currentPageNumber));
 
-    return (
-      <div>
-        <Search onSearch={this.search.bind(this)} />
-        <table>
-          <tbody>{rowsToRender}</tbody>
-        </table>
-        <Pagination
-          currentPageNumber={currentPageNumber}
-          totalNumberOfPages={totalNumberOfPages}
-          onChange={this.changeToPageNumber.bind(this)}
-        />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Search onSearch={search} />
+      <table>
+        <tbody>{rowsToRender}</tbody>
+      </table>
+      <Pagination
+        currentPageNumber={currentPageNumber}
+        totalNumberOfPages={totalNumberOfPages}
+        onChange={changeToPageNumber}
+      />
+    </div>
+  );
 }
 
 export default Table;
