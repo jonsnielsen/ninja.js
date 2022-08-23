@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getUsers } from '../../services/userService';
-import Table from '../../components/UserTable';
+import Table from '../../components/Table';
 
 export function UserTableContainer() {
   const {
