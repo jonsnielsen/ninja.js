@@ -2,7 +2,7 @@ import React from 'react';
 
 import './App.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { UserDataTableContainer } from './UserDataTableContainer/UserDataTableContainer';
+import { UserDataTableContainer } from './containers/UserTableContainer/UserDataTableContainer';
 
 const queryClient = new QueryClient();
 
