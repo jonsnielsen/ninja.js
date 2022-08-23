@@ -1,24 +1,23 @@
 import React from 'react';
 
-import Page from './Page';
-
 function Pagination({ currentPageNumber, totalNumberOfPages, onChange }) {
-  const pages = Array.from(Array(totalNumberOfPages).keys()).map(
-    (pageNumber) => {
-      return (
-        <Page
-          key={pageNumber}
-          currentPageNumber={currentPageNumber}
-          pageNumber={pageNumber}
-          onChange={onChange}
-        />
-      );
-    },
-  );
+  if (!totalNumberOfPages) return null;
 
-  if (pages.length <= 1) {
-    return null;
-  }
+  const pages = [...Array(totalNumberOfPages)].map((_, pageNumber) => {
+    const isActivePage = currentPageNumber === pageNumber;
+
+    return (
+      <li key={pageNumber} className="page-item mr-1">
+        <button
+          className={`page-link  ${isActivePage ? 'button-outline' : ''}`}
+          onClick={() => onChange(pageNumber)}
+        >
+          {pageNumber}
+        </button>
+      </li>
+    );
+  });
+
   return <ul className="pagination">{pages}</ul>;
 }
 
